@@ -22,6 +22,8 @@ public class Contract {
 	boolean hofun = false;
 	Event events = null;
 	int index ;
+	boolean hobody = false;
+	boolean activate = true;
 
 	public Contract(String name, ArrayList<Field> f, ArrayList<Asset> a, ArrayList<Party> d, ArrayList<String> s1, String s2, int i){
 		id = name;
@@ -49,6 +51,22 @@ public class Contract {
 			prec = new ArrayList<Expression>();
 		}
 		prec.add(cond);
+	}
+	
+	public void setHObody(boolean flag) {
+		 hobody = flag;
+	}
+	
+	public boolean retHObody() {
+		return hobody;
+	}
+	
+	public void setActivate(boolean flag) {
+		 activate = flag;
+	}
+	
+	public boolean activate() {
+		return activate;
 	}
 	
 	public boolean retFlag() {

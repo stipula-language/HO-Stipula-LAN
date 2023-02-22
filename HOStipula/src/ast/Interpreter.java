@@ -307,6 +307,7 @@ public class Interpreter extends HOStipulaBaseVisitor {
 				}
 				//program.addContracts(hocode.getContracts());
 			}
+			newContract.setHObody(true);
 			return newContract ;
 		}
 	}
