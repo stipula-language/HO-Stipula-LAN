@@ -1,0 +1,10 @@
+parties Government
+
+@Standard Client: buy(x)[w] (w<=(flour*cost_flour)){ 
+	x -> Farm 
+	w -> Farm
+	(cost_flour*w) -o flour, Client
+	(0.2*w) -o w, Government
+	w -o Farm;
+	_
+} ==> @Standard

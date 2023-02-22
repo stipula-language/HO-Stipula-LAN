@@ -1,0 +1,12 @@
+parties Borrower2
+asset wallet2
+field cost2, rentingTime2, code2
+
+@Inactive Borrower : pay2()[h] (h == cost2) {
+	h -o wallet2 
+	code2 -> Borrower2;
+	now+rentingTime2 >> 
+		@Using {
+		EndReached -> Borrower2
+		} ==> @Return 
+} ==> @Using

@@ -1,0 +1,3 @@
+INDEX VERSION 1.130+/Users/laneve/Documents/dev/HOStipula/.metadata/.plugins/org.eclipse.jdt.core
+1096074031.index
+2569042192.index

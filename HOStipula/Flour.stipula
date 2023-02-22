@@ -1,0 +1,26 @@
+stipula Deposit {
+asset flour
+field cost_flour 
+init Standard
+
+agreement(Client, Farm)(){
+}==> @Standard
+
+@Standard Farm: send(x)[h]{ 
+	x -> Client
+	h -> Client
+	h -o flour;
+	_
+	} ==> @Standard
+
+@Standard Client: buy(x)[w] (w <= flour){
+	x -> Farm
+	w -> Farm 
+	(1/cost_flour) -o flour,Client 
+	w -o Farm ;
+	_
+} ==> @Standard
+
+@Standard Client, Farm: hardship(x)[] ([hardship2.stipula])
+
+}
