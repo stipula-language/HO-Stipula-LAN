@@ -43,4 +43,7 @@ agreement (Lender,Borrower,Authority)(rentingTime,cost){
 	wallet -o Borrower;
 	_
 } ==> @End
+
+@Payment Lender : hardship()[]([ BikeRentalHardship.stipula ])
+
 }

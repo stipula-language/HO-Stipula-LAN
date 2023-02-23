@@ -1,0 +1,12 @@
+parties Government
+field tax
+
+@Payment Borrower : pay()[h] (h == cost) {
+	(h*tax) -o Government
+	h -o wallet 
+	code -> Borrower;
+	now+rentingTime >> 
+		@Using {
+		EndReached -> Borrower
+		} ==> @Return 
+} ==> @Using

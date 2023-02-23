@@ -31,7 +31,7 @@ public class Compile {
 
 	public static void main(String[] args) throws Exception {
 	    
-		String fileName = "Flour.stipula";
+		String fileName = "bike_rental.stipula";
 		FileInputStream is = new FileInputStream(fileName);
 		ANTLRInputStream input = new ANTLRInputStream(is);
 		HOStipulaLexer lexer = new HOStipulaLexer(input);
