@@ -89,7 +89,10 @@ public class Interpreter extends HOStipulaBaseVisitor {
 		for(FunContext f : ctx.fun()) {
 			Contract cnt = visitFun(f);
 			cnt.setGlobalParties(program.getParties());
+			cnt.addFields(program.getFields());
+			cnt.addAssets(program.getAssets());
 			if(cnt.retFlag()) {
+				cnt.setActivate(false);
 				program.addContract(0,cnt);
 			}
 			else {
@@ -231,6 +234,11 @@ public class Interpreter extends HOStipulaBaseVisitor {
 		if(ctx.body()!=null) {
 			state2 = ctx.body().state().getText();
 		}
+		else {
+			if(state1.size()!=0) {
+				state2 = state1.get(0);
+			}
+		}
 		Contract newContract = new Contract(ctx.funId.getText(), fields, assets, disp, state1, state2, index);
 
 		if (ctx.body() != null) {
@@ -303,10 +311,13 @@ public class Interpreter extends HOStipulaBaseVisitor {
 			}
 			if(hocode.getContracts()!=null) {
 				for(Contract el : hocode.getContracts()) {
+					el.setActivate(false);
 					program.addContract(0,el);
+					newContract.setSubContracts(el.getId());
 				}
 				//program.addContracts(hocode.getContracts());
 			}
+
 			newContract.setHObody(true);
 			return newContract ;
 		}
@@ -337,7 +348,7 @@ public class Interpreter extends HOStipulaBaseVisitor {
 				newTmp.addFields(program.getFields());
 				newTmp.addAssets(program.getAssets());
 				newTmp.setGlobalParties(program.getParties());
-				progFuns.add(newTmp);			
+				progFuns.add(newTmp);		
 			}
 		}
 		HOcode hocode = new HOcode(progFields,progAssets,progParties,progFuns);

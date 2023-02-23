@@ -24,6 +24,7 @@ public class Contract {
 	int index ;
 	boolean hobody = false;
 	boolean activate = true;
+	ArrayList<String> subContracts = null;
 
 	public Contract(String name, ArrayList<Field> f, ArrayList<Asset> a, ArrayList<Party> d, ArrayList<String> s1, String s2, int i){
 		id = name;
@@ -51,6 +52,17 @@ public class Contract {
 			prec = new ArrayList<Expression>();
 		}
 		prec.add(cond);
+	}
+	
+	public void setSubContracts(String cnt) {
+		if(subContracts==null) {
+			subContracts = new ArrayList<String>();
+		}
+		subContracts.add(cnt);
+	}
+	
+	public ArrayList<String> getSubContracts(){
+		return subContracts;
 	}
 	
 	public void setHObody(boolean flag) {

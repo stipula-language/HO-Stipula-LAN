@@ -491,7 +491,7 @@ public class Program {
 						}
 					}
 
-					if(rightInitState && !c.retFlag() && c.activate()) {
+					if(rightInitState && c.activate() ) {
 						found = true;
 						for(int i=0; i<c.getParty().size(); i++) {
 							if(i==0) {
@@ -668,10 +668,17 @@ public class Program {
 								System.out.println("Executing...");
 								
 								typedVars = typeinferencer.getTypes();
-								success = tmpContr.runContract(typeinferencer,index);
-								if(tmpContr.retHObody()) {
-									System.out.println("sono qua!");
+								if(tmpContr.getSubContracts()!=null) {
+									for(String el : tmpContr.getSubContracts()) {
+										for(Contract el2 : this.getContracts()) {
+											if(el2.getId().equals(el) && el2.retFlag()) {
+												el2.setActivate(true);
+											}
+										}
+									}
 								}
+								success = tmpContr.runContract(typeinferencer,index);
+								
 								this.updateFields(tmpContr);
 								this.updateAssets(tmpContr);
 								this.updateParties(tmpContr);

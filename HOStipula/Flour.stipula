@@ -21,6 +21,6 @@ agreement(Client, Farm)(){
 	_
 } ==> @Standard
 
-@Standard Client, Farm: hardship(x)[] ([hardship2.stipula])
+@Standard Client, Farm: hardship(x)[] ([hardship.stipula])
 
 }

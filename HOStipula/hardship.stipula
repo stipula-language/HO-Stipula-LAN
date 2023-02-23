@@ -1,12 +1,12 @@
 asset wallet
-@Excp Client: order(x)[w] {
+@Standard Client: order(x)[w] {
 	(w/cost_flour) -> Farm
 	(0.5*w) -o w,Farm
 	w -o wallet ;
 	_
 } ==> @Excp2
 
-@Excp2 Farm: send(x)[h] (h == (2*wallet)/cost_flour){
+@Standard Farm: send(x)[h] (h == (2*wallet)/cost_flour){
 	h -o Client 
 	wallet -o Farm;
 	_ 
