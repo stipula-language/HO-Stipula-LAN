@@ -688,8 +688,7 @@ public class Program {
 										for(Contract el2 : this.getContracts()) {
 											if(el2.getId().equals(el) && el2.retFlag()) {
 												el2.setActivate(true);
-											}
-											
+											}		
 										}
 									}
 								}

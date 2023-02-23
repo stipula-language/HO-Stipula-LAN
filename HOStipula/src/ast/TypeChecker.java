@@ -24,11 +24,30 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 	int n_scope = 0	;
 	ArrayList<String> contractNames = null;
 	ArrayList<String> parties = null;
+	ArrayList<Pair<String, Boolean>> partiesHO = null;
+	ArrayList<Pair<String, Boolean>> assetsHO = null;
+	ArrayList<Pair<String, Boolean>> fieldsHO = null;
+	ArrayList<Pair<String, Boolean>> functionsHO = null;
 
 	ArrayList<Pair<String,ArrayList<Pair<String,Type>>>> funParams = new ArrayList<Pair<String,ArrayList<Pair<String,Type>>>>();
 
 	public ArrayList<String> getNames(){
 		return contractNames;
+	}
+	
+	public ArrayList<Pair<String,Boolean>> getPartiesHO(){
+		return partiesHO;
+	}
+	
+	public ArrayList<Pair<String,Boolean>> getFieldsHO(){
+		return fieldsHO;
+	}
+	
+	public ArrayList<Pair<String,Boolean>> getAssetsHO(){
+		return assetsHO;
+	}
+	public ArrayList<Pair<String,Boolean>> getFunctionsHO(){
+		return functionsHO;
 	}
 
 	public void print_map(){
@@ -48,7 +67,6 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 	}
 
 	public ArrayList<Pair<String,ArrayList<Pair<String,Type>>>> getFunParams() {
-		
 		return funParams;
 	}
 
@@ -137,6 +155,7 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 					}
 				}
 			}
+			/*
 			if(contractNames == null) {
 				contractNames = new ArrayList<String>();
 			}
@@ -145,7 +164,7 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 				name = name+dc.ID().getText();
 			}
 			name = name+"."+f.ID().getText();
-			contractNames.add(name);
+			contractNames.add(name);*/
 		}
 		return types;
 	}
@@ -179,6 +198,15 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 		Map<Pair<String,Integer>,Type> toRet = new LinkedHashMap<Pair<String,Integer>,Type>();
 		ArrayList<Pair<String,Type>> tmpFuns = new ArrayList<Pair<String,Type>> ();
 		n_scope++;
+		if(contractNames == null) {
+			contractNames = new ArrayList<String>();
+		}
+		String name = "";
+		for(PartyContext dc : ctx.party()) {
+			name = name+dc.ID().getText();
+		}
+		name = name+"."+ctx.ID().getText();
+		contractNames.add(name);
 		if(ctx.vardec()!=null) {
 			for(VardecContext n : ctx.vardec()) {
 				toRet.put(new Pair<String, Integer>(n.ID().getText(),n_scope),new GeneralType(n_types));
@@ -194,7 +222,7 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 			}
 		}
 		funParams.add(new Pair<String, ArrayList<Pair<String, Type>>>(ctx.ID().getText(),tmpFuns));
-
+		
 		addElementsMap(toRet);
 		if(ctx.body()!=null) {
 			if(ctx.body().prec()!=null) {
@@ -289,6 +317,10 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 	public Map<Pair<String,Integer>,Type> visitHocode(HocodeContext ctx){
 		for(PartyContext d : ctx.party()) {
 			parties.add(0,d.ID().getText());
+			if(partiesHO==null) {
+				partiesHO = new ArrayList<Pair<String,Boolean>>();
+			}
+			partiesHO.add(new Pair<String,Boolean>(d.ID().getText(),false));
 		}
 		Map<Pair<String,Integer>,Type> toRet = new LinkedHashMap<Pair<String,Integer>,Type>();
 		if(ctx.assetdecl()!=null) {
@@ -296,6 +328,10 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 			tmpAssets = visitAssetdecl(ctx.assetdecl(),0);
 			for(Pair<String,Integer> el : tmpAssets.keySet()) {
 				toRet.put(el,tmpAssets.get(el));
+				if(assetsHO==null) {
+					assetsHO = new ArrayList<Pair<String,Boolean>>();
+				}
+				assetsHO.add(new Pair<String,Boolean>(el.getKey(),false));
 			}
 		}
 		if(ctx.fielddecl()!=null) {
@@ -303,22 +339,27 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 			tmpFields = visitFielddecl(ctx.fielddecl(),0);
 			for(Pair<String,Integer> el : tmpFields.keySet()) {
 				toRet.put(el,tmpFields.get(el));
+				if(fieldsHO==null) {
+					fieldsHO = new ArrayList<Pair<String,Boolean>>();
+				}
+				fieldsHO.add(new Pair<String,Boolean>(el.getKey(),false));
 			}
 		}
+		
 		if(ctx.fun()!=null) {
 			for(FunContext el : ctx.fun()) {
 				Map<Pair<String,Integer>,Type> tmpMap = new LinkedHashMap<Pair<String,Integer>,Type>();
 				tmpMap = visitFun(el);
 				toRet.putAll(tmpMap);
-				if(contractNames == null) {
-					contractNames = new ArrayList<String>();
-				}
 				String name = "";
 				for(PartyContext dc : el.party()) {
 					name = name+dc.ID().getText();
 				}
 				name = name+"."+el.ID().getText();
-				contractNames.add(0,name);
+				if(functionsHO==null) {
+					functionsHO = new ArrayList<Pair<String,Boolean>>();
+				}
+				functionsHO.add(new Pair<String,Boolean>(name,false));
 			}
 		}
 		return toRet;

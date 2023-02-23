@@ -48,9 +48,22 @@ public class Compile {
 			Map<Pair<String, Integer>, Type> types = (Map<Pair<String, Integer>, Type>) code.visit(syntree);
 			ArrayList<Pair<String,ArrayList<Pair<String,Type>>>> funParams = code.getFunParams();
 			ArrayList<String> nc = code.getNames();
+			
 			System.out.println("TYPE CHECKING:");
 			System.out.println("==================");
-			TypeInference typeinferer = new TypeInference(types,nc,funParams);			
+			TypeInference typeinferer = new TypeInference(types,nc,funParams);	
+			if(code.getFieldsHO()!=null) {
+				typeinferer.setFieldsHO(code.getFieldsHO());
+			}
+			if(code.getAssetsHO()!=null) {
+				typeinferer.setAssetsHO(code.getAssetsHO());
+			}
+			if(code.getPartiesHO()!=null) {
+				typeinferer.setPartiesHO(code.getPartiesHO());
+			}
+			if(code.getFunctionsHO()!=null) {
+				typeinferer.setFunctionsHO(code.getFunctionsHO());
+			}
 			typeinferer.print_map();
 			System.out.println("==================");
 

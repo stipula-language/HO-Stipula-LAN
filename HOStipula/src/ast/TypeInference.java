@@ -7,22 +7,54 @@ import java.util.Map;
 import lib.Pair;
 
 public class TypeInference {
+
 	Map<Pair<String,Integer>,Type> types = null;
 	ArrayList<String> contractNames = null;
+	ArrayList<Pair<String,Boolean>> assetsHO = null;
+	ArrayList<Pair<String,Boolean>> fieldsHO = null;
+	ArrayList<Pair<String,Boolean>> functionsHO = null;
+	ArrayList<Pair<String,Boolean>> partiesHO = null;
 	ArrayList<Pair<String,ArrayList<Pair<String,Type>>>> funParams = null;
+
 	public TypeInference(Map<Pair<String,Integer>,Type> t,ArrayList<String> cn, ArrayList<Pair<String,ArrayList<Pair<String,Type>>>> fP) {
 		types = t;
 		contractNames = cn;
 		funParams = fP;
-		
+
 	}
 
 	public Map<Pair<String,Integer>,Type> getTypes(){
 		return types;
 	}
 
-	public void setTypesInput(String[] str) {
+	public ArrayList<Pair<String,Boolean>> getPartiesHO(){
+		return partiesHO;
+	}
 
+	public ArrayList<Pair<String,Boolean>> getFieldsHO(){
+		return fieldsHO;
+	}
+
+	public ArrayList<Pair<String,Boolean>> getAssetsHO(){
+		return assetsHO;
+	}
+	public ArrayList<Pair<String,Boolean>> getFunctionsHO(){
+		return functionsHO;
+	}
+
+	public void setPartiesHO(ArrayList<Pair<String,Boolean>> f){
+		partiesHO = f;
+	}
+
+	public void setFieldsHO(ArrayList<Pair<String,Boolean>> f){
+		fieldsHO = f;
+	}
+
+	public void setAssetsHO(ArrayList<Pair<String,Boolean>> f){
+		assetsHO = f;
+	}
+	public void setFunctionsHO(ArrayList<Pair<String,Boolean>> f){
+		functionsHO = f;
 	}
 
 	public void print_map(){
@@ -51,14 +83,38 @@ public class TypeInference {
 			}
 
 		}
-	
+
 		if(assets.size()>0) {
 			System.out.println("Assets:");
-			print_global(assets);
+			Map<Pair<String,Integer>,Type> tmpAssets = new LinkedHashMap<Pair<String,Integer>,Type>();
+			for(Pair<String,Integer> el : assets.keySet()) {
+				boolean flag = false;
+				for(Pair<String,Boolean> el2 : assetsHO) {
+					if(el2.getKey().equals(el.getKey()) && !el2.getValue()) {
+						flag = true;
+					}
+				}
+				if(!flag) {
+					tmpAssets.put(el,assets.get(el));
+				}
+			}
+			print_global(tmpAssets);
 		}
 		if(fields.size()>0) {
 			System.out.println("Fields:");
-			print_global(fields);
+			Map<Pair<String,Integer>,Type> tmpFields = new LinkedHashMap<Pair<String,Integer>,Type>();
+			for(Pair<String,Integer> el : fields.keySet()) {
+				boolean flag = false;
+				for(Pair<String,Boolean> el2 : fieldsHO) {
+					if(el2.getKey().equals(el.getKey()) && !el2.getValue()) {
+						flag = true;
+					}
+				}
+				if(!flag) {
+					tmpFields.put(el,fields.get(el));
+				}
+			}
+			print_global(tmpFields);
 		}
 		System.out.println("Functions:");
 		print_functions(functions);
@@ -73,26 +129,36 @@ public class TypeInference {
 	public void print_functions(Map<Pair<String,Integer>,Type> map) {
 		Map<Pair<String,Integer>,Type> tmp1 = null;
 		Map<Pair<String,Integer>,Type> tmp2 = null;
+
 		for(int i=0; i<contractNames.size(); i++) {
-			tmp1 = new LinkedHashMap<Pair<String,Integer>,Type>();
-			tmp2 = new LinkedHashMap<Pair<String,Integer>,Type>();
-			for(Pair<String,Integer> pair : map.keySet()) {
-				if(pair.getValue()-1==i) {
-					if(map.get(pair) instanceof AssetType) {
-						tmp2.put(pair,map.get(pair));
-					}
-					else {
-						tmp1.put(pair,map.get(pair));
-					}
+			boolean toPrint = true;
+			for(Pair<String,Boolean> el2 : functionsHO) {
+				if(el2.getKey().equals(contractNames.get(i)) && !el2.getValue()) {
+					toPrint = false;
 				}
 			}
-			print_fun(tmp1,tmp2,i);
+			if(toPrint) {
+				tmp1 = new LinkedHashMap<Pair<String,Integer>,Type>();
+				tmp2 = new LinkedHashMap<Pair<String,Integer>,Type>();
+				for(Pair<String,Integer> pair : map.keySet()) {
+					if(pair.getValue()-1==i) {
+						if(map.get(pair) instanceof AssetType) {
+							tmp2.put(pair,map.get(pair));
+						}
+						else {
+							tmp1.put(pair,map.get(pair));
+						}
+					}
+				}
+				print_fun(tmp1,tmp2,i);
+			}
 		}
 
 	}
 
 
 	public void print_fun(Map<Pair<String,Integer>,Type> tmp1, Map<Pair<String,Integer>,Type> tmp2, int index) {
+
 		String str = "\t"+contractNames.get(index)+"(";
 		for(Pair<String,Integer> pair : tmp1.keySet()) {
 			str = str + tmp1.get(pair).getTypeName()+",";
@@ -114,6 +180,7 @@ public class TypeInference {
 			str = str + "]";
 		}
 		System.out.println(str);
+
 	}
 
 	public Type getCorrectType(Field v1, int index) {
