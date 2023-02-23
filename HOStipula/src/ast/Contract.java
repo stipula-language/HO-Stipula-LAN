@@ -25,6 +25,7 @@ public class Contract {
 	boolean hobody = false;
 	boolean activate = true;
 	ArrayList<String> subContracts = null;
+	String hocodename = null;
 
 	public Contract(String name, ArrayList<Field> f, ArrayList<Asset> a, ArrayList<Party> d, ArrayList<String> s1, String s2, int i){
 		id = name;
@@ -45,6 +46,14 @@ public class Contract {
 		endState = s2;
 		index = i;
 		hofun = ho;
+	}
+	
+	public void setHOname(String n) {
+		hocodename = n;
+	}
+	
+	public String retHOname() {
+		return hocodename;
 	}
 
 	public void addPrecondition(Expression cond) {

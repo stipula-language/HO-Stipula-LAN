@@ -8,14 +8,23 @@ public class Party extends Entity{
 	float value = 0;
 	String valueStr = "";
 	boolean hopar = false;
+	boolean activate = true;
 
 	public Party(String n) {
 		name = n;
 	}
-	
+
 	public Party(String n, boolean flag) {
 		name = n;
 		hopar = flag;
+	}
+
+	public void setActivate(boolean flag) {
+		activate = flag;
+	}
+
+	public boolean activate() {
+		return activate;
 	}
 
 	public boolean retFlag() {
@@ -25,7 +34,7 @@ public class Party extends Entity{
 	public void setUserId(String s) {
 		userId = s;
 	}
-	
+
 	public String getUserId() {
 		if(userId==null) {
 			return "";
@@ -39,11 +48,11 @@ public class Party extends Entity{
 	public void setValueAsset(float v) {
 		valueAsset.increase(v);
 	}
-	
+
 	public void setValueAssetCalc(float v) {
 		valueAsset.setCalcValue(v);
 	}
-	
+
 	public void moveAsset(Party d, float val) {
 		valueAsset.withdraw(d,val);
 	}
@@ -67,7 +76,7 @@ public class Party extends Entity{
 	public String getId() {
 		return name;
 	}
-	
+
 	public Asset getAsset() {
 		return valueAsset;
 	}

@@ -1,4 +1,6 @@
+parties Adele
 asset wallet
+
 @Standard Client: order(x)[w] {
 	(w/cost_flour) -> Farm
 	(0.5*w) -o w,Farm

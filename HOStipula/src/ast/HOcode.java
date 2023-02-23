@@ -8,12 +8,21 @@ public class HOcode {
 	private ArrayList<Asset> assets = null;
 	private ArrayList<Party> parties = null;
 	private ArrayList<Contract> functions = null;
+	private String name ;
 	
 	public HOcode(ArrayList<Field> f, ArrayList<Asset> a, ArrayList<Party> p, ArrayList<Contract> funs) {
 		fields = f;
 		assets = a;
 		parties = p;
 		functions = funs;
+	}
+	
+	public void addName(String n) {
+		name = n;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public ArrayList<Field> getFields(){

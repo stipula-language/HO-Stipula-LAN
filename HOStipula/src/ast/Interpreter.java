@@ -91,6 +91,7 @@ public class Interpreter extends HOStipulaBaseVisitor {
 			cnt.setGlobalParties(program.getParties());
 			cnt.addFields(program.getFields());
 			cnt.addAssets(program.getAssets());
+			
 			if(cnt.retFlag()) {
 				cnt.setActivate(false);
 				program.addContract(0,cnt);
@@ -300,25 +301,37 @@ public class Interpreter extends HOStipulaBaseVisitor {
 			HOStipulaParser parser = new HOStipulaParser(tokens) ;
 			ParseTree syntree = parser.hocode();
 			HOcode hocode = (HOcode) this.visit(syntree);
+			hocode.addName(fileName);
 			if(hocode.getParties()!=null) {
+				for(Party el : hocode.getParties()) {
+					el.setActivate(false);
+				}
 				program.addParties(hocode.getParties());
 			}
 			if(hocode.getAssets()!=null) {
+				for(Asset el : hocode.getAssets()) {
+					el.setActivate(false);
+				}
 				program.addAssets(hocode.getAssets());
 			}
 			if(hocode.getFields()!=null) {
+				for(Field el : hocode.getFields()) {
+					el.setActivate(false);
+				}
 				program.addFields(hocode.getFields());
 			}
 			if(hocode.getContracts()!=null) {
 				for(Contract el : hocode.getContracts()) {
 					el.setActivate(false);
+					el.setHOname(hocode.getName());
 					program.addContract(0,el);
 					newContract.setSubContracts(el.getId());
 				}
-				//program.addContracts(hocode.getContracts());
 			}
-
+			program.addHOcode(hocode);
 			newContract.setHObody(true);
+			newContract.setHOname(hocode.getName());
+
 			return newContract ;
 		}
 	}

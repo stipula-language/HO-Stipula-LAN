@@ -6,7 +6,8 @@ public class Asset extends Entity{
 	float rawvalue;
 	Type type = new AssetType();
 	boolean hopar = false;
-
+	boolean activate = true;
+	
 	public Asset() {
 		name = "";
 		rawvalue = 0;
@@ -27,6 +28,14 @@ public class Asset extends Entity{
 		hopar = flag;
 	}
 
+	public void setActivate(boolean flag) {
+		 activate = flag;
+	}
+	
+	public boolean activate() {
+		return activate;
+	}
+	
 	public boolean retFlag() {
 		return hopar;
 	}

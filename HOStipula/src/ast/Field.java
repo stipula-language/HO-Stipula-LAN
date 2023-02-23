@@ -8,6 +8,8 @@ public class Field extends Entity{
 	boolean valueBool ;
 	Type type = null;
 	boolean hopar = false;
+	boolean activate = true;
+
 
 	public Field() {
 		name = "";
@@ -27,6 +29,14 @@ public class Field extends Entity{
 	public Field(String n, float v) {
 		name = n;
 		value = v;
+	}
+	
+	public void setActivate(boolean flag) {
+		 activate = flag;
+	}
+	
+	public boolean activate() {
+		return activate;
 	}
 	
 	public boolean retFlag() {

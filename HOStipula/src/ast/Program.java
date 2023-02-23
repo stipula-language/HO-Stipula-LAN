@@ -28,6 +28,7 @@ public class Program {
 	private int howManyThreads = 0;
 	private boolean checkEvent = false;
 	private int caseExec = 0;
+	private ArrayList<HOcode> hocodes = null;
 
 
 	public Program(String name, ArrayList<Field> f, ArrayList<Asset> a, ArrayList<Party> d, String s){
@@ -46,13 +47,24 @@ public class Program {
 		return runningState;
 	}
 
+	public void addHOcode(HOcode h) {
+		if(hocodes == null) {
+			hocodes = new ArrayList<HOcode>();
+		}
+		hocodes.add(h);
+	}
+	
+	public ArrayList<HOcode> getHOcodes() {
+		return hocodes;
+	}
+	
 	public void addContract(Contract c) {
 		if(contracts == null) {
 			contracts = new ArrayList<Contract>();
 		}
 		contracts.add(c);
 	}
-	
+
 	public void addContract(int index, Contract c) {
 		if(contracts == null) {
 			contracts = new ArrayList<Contract>();
@@ -244,16 +256,19 @@ public class Program {
 
 	public void printFields() {
 		for(Field f : fields) {
-
-			System.out.print("\t");
-			f.printField();
+			if(f.activate()) {
+				System.out.print("\t");
+				f.printField();
+			}
 		}
 	}
 
 	public void printAssets() {
 		for(Asset f : assets) {
-			System.out.print("\t");
-			f.printAsset();
+			if(f.activate()) {
+				System.out.print("\t");
+				f.printAsset();
+			}
 		}
 
 	}
@@ -261,8 +276,10 @@ public class Program {
 
 	public void printParties() {
 		for(Party d : parties) {
-			System.out.print("\t");
-			d.printParty();
+			if(d.activate()) {
+				System.out.print("\t");
+				d.printParty();
+			}
 		}
 
 	}
@@ -402,10 +419,7 @@ public class Program {
 		}
 		if(this.getParties()!=null) {
 			System.out.println("Parties:");
-			for(Party a : this.getParties()) {
-				System.out.print("\t");
-				a.printParty();
-			}
+			this.printParties();
 		}
 		System.out.println("############");
 		for(int i = 0; i<this.getContracts().size(); i++) {
@@ -666,19 +680,48 @@ public class Program {
 								}
 
 								System.out.println("Executing...");
-								
+
 								typedVars = typeinferencer.getTypes();
+								
 								if(tmpContr.getSubContracts()!=null) {
 									for(String el : tmpContr.getSubContracts()) {
 										for(Contract el2 : this.getContracts()) {
 											if(el2.getId().equals(el) && el2.retFlag()) {
 												el2.setActivate(true);
 											}
+											
+										}
+									}
+								}
+								if(tmpContr.retHOname()!=null) {
+									for(HOcode h : this.getHOcodes()) {
+										if(tmpContr.retHOname().equals(h.getName())) {
+											for(Party p : h.getParties()) {
+												for( Party p2 : this.getParties()) {
+													if(p.getId().equals(p2.getId())) {
+														p2.setActivate(true);
+													}
+												}
+											}
+											for(Asset p : h.getAssets()) {
+												for( Asset p2 : this.getAssets()) {
+													if(p.getId().equals(p2.getId())) {
+														p2.setActivate(true);
+													}
+												}
+											}
+											for(Field p : h.getFields()) {
+												for( Field p2 : this.getFields()) {
+													if(p.getId().equals(p2.getId())) {
+														p2.setActivate(true);
+													}
+												}
+											}
 										}
 									}
 								}
 								success = tmpContr.runContract(typeinferencer,index);
-								
+
 								this.updateFields(tmpContr);
 								this.updateAssets(tmpContr);
 								this.updateParties(tmpContr);
