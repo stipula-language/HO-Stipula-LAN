@@ -1,7 +1,9 @@
 # HO-Stipula-LAN
-Stipula Prototype
+The Higher-Order Stipula Prototype
 
-Stipula is a domain specific language that may assist legal practitioners in programming legal contracts through specific patterns. In this repository, we uploaded the prototype and some examples.
+Stipula is a domain specific language that may assist legal practitioners in programming legal contracts through specific patterns. 
+The higher-order extension also admits functions that carry codes that extend the original constract code.
+In this repository, we uploaded the prototype and some examples.
 
 Description
 
