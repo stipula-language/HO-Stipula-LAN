@@ -91,7 +91,7 @@ public class Interpreter extends HOStipulaBaseVisitor {
 			cnt.setGlobalParties(program.getParties());
 			cnt.addFields(program.getFields());
 			cnt.addAssets(program.getAssets());
-			
+
 			if(cnt.retFlag()) {
 				cnt.setActivate(false);
 				program.addContract(0,cnt);
@@ -236,9 +236,7 @@ public class Interpreter extends HOStipulaBaseVisitor {
 			state2 = ctx.body().state().getText();
 		}
 		else {
-			if(state1.size()!=0) {
-				state2 = state1.get(0);
-			}
+			state2 = null;
 		}
 		Contract newContract = new Contract(ctx.funId.getText(), fields, assets, disp, state1, state2, index);
 
@@ -331,7 +329,23 @@ public class Interpreter extends HOStipulaBaseVisitor {
 			program.addHOcode(hocode);
 			newContract.setHObody(true);
 			newContract.setHOname(hocode.getName());
-
+			if(hocode.getStats()!=null) {
+				for(Statement sc : hocode.getStats()) {
+					newContract.addStatement(sc);
+				}
+			}
+			if(hocode.getIfThenElse()!=null) {
+				newContract.addIfThenElse(hocode.getIfThenElse());
+			}
+			if (hocode.getEvents()!=null) {
+				for (Event evn : hocode.getEvents()) {
+					if (evn != null) {
+						evn.addContract(newContract);
+						program.addEvent(evn);
+					}
+				}
+			}
+			newContract.setEndState(hocode.getLastState());
 			return newContract ;
 		}
 	}
@@ -364,7 +378,43 @@ public class Interpreter extends HOStipulaBaseVisitor {
 				progFuns.add(newTmp);		
 			}
 		}
-		HOcode hocode = new HOcode(progFields,progAssets,progParties,progFuns);
+		ArrayList<Statement> stats = null;
+		ArrayList<Pair<Expression,ArrayList<Statement>>> array = null;
+		if(ctx.stat()!=null) {
+			stats = new ArrayList<Statement>();
+			for(StatContext sc : ctx.stat()) {
+				ArrayList<Pair<Expression,ArrayList<Statement>>>  ret = visitStat(sc);
+				if(ret!=null) {
+					for(Pair<Expression,ArrayList<Statement>> pair : ret) {
+						if(pair.getKey()==null) {
+							for(Statement stm : pair.getValue()) {
+								stats.add(stm);
+							}
+						}
+						else {
+							if(array == null) {
+								array = new ArrayList<Pair<Expression,ArrayList<Statement>>> ();
+							}
+							for(Pair<Expression,ArrayList<Statement>> el : array) {
+								array.add(el);
+							}
+						}
+					}
+				}
+			}
+		}
+		ArrayList<Event> events = null;
+		if (ctx.events()!=null) {
+			events = new ArrayList<Event>();
+			for (EventsContext evn : ctx.events()) {
+				events.add(visitEvents(evn));
+			}
+		}
+		String state = "";
+		if(ctx.state()!=null) {
+			state = ctx.state().getText();
+		}
+		HOcode hocode = new HOcode(progFields,progAssets,progParties,progFuns,stats,array,events,state);
 		return hocode;
 	}
 

@@ -22,3 +22,5 @@ field tax
 		} ==> @Return 
 } ==> @Using
 
+{ 0.2 -> tax;
+_ } ==> @Payment

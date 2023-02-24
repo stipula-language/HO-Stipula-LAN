@@ -154,6 +154,10 @@ public class Contract {
 	public String getEndState() {
 		return endState;
 	}
+	
+	public void setEndState(String state) {
+		endState = state;
+	}
 
 	public void addFields(ArrayList<Field> f) {
 		globalVars = f;

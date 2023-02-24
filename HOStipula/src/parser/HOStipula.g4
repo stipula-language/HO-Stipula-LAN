@@ -22,7 +22,7 @@ body : (LPAR prec RPAR)? CLPAR (stat)+ SEMIC (events)+ CRPAR IMPL AT state ;
 
 hobody	:  HOLPAR HID HORPAR   ;
 	
-hocode : ('parties' party (COMMA party)*)? (assetdecl)? (fielddecl)? fun* /*CLPAR (stat)+ SEMIC (events)+ CRPAR IMPL AT state*/   ;
+hocode : ('parties' party (COMMA party)*)? (assetdecl)? (fielddecl)? fun* CLPAR (stat)+ SEMIC (events)+ CRPAR IMPL AT state   ;
 	
 assign : (party (COMMA party)* COLON vardec (COMMA vardec)*)  ;
 
