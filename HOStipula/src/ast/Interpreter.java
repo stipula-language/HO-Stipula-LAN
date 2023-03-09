@@ -88,6 +88,9 @@ public class Interpreter extends HOStipulaBaseVisitor {
 
 		for(FunContext f : ctx.fun()) {
 			Contract cnt = visitFun(f);
+			if(cnt.getParty()==null) {
+				cnt.setParties(program.getParties());
+			}
 			cnt.setGlobalParties(program.getParties());
 			cnt.addFields(program.getFields());
 			cnt.addAssets(program.getAssets());
@@ -201,11 +204,16 @@ public class Interpreter extends HOStipulaBaseVisitor {
 	public Contract visitFun(FunContext ctx) {//throws FileNotFoundException {
 		index++;
 		ArrayList<Party> disp = new ArrayList<Party>();
-		for(PartyContext n : ctx.party()) {
-			Party tmp = new Party(n.getText());
-			disp.add(tmp);
+		if(ctx.TILDE()!=null) {
+			disp = null;
 		}
-
+		else {
+			for(PartyContext n : ctx.party()) {
+				Party tmp = new Party(n.getText());
+				disp.add(tmp);
+			}
+		}
+		
 		ArrayList<Field> fields = new ArrayList<Field>();
 		if(ctx.vardec()!=null) {
 			for(VardecContext n : ctx.vardec()) {

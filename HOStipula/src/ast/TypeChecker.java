@@ -34,15 +34,15 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 	public ArrayList<String> getNames(){
 		return contractNames;
 	}
-	
+
 	public ArrayList<Pair<String,Boolean>> getPartiesHO(){
 		return partiesHO;
 	}
-	
+
 	public ArrayList<Pair<String,Boolean>> getFieldsHO(){
 		return fieldsHO;
 	}
-	
+
 	public ArrayList<Pair<String,Boolean>> getAssetsHO(){
 		return assetsHO;
 	}
@@ -139,7 +139,7 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 
 		for(FunContext f : ctx.fun()) {
 			Map<Pair<String,Integer>,Type> tmp = visitFun(f);
-			
+
 			for(Pair<String,Integer> s : tmp.keySet()) {
 				if(!isPresent(s,types)){
 					types.put(new Pair<String,Integer>(s.getKey(),s.getValue()),tmp.get(s));
@@ -202,8 +202,16 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 			contractNames = new ArrayList<String>();
 		}
 		String name = "";
-		for(PartyContext dc : ctx.party()) {
-			name = name+dc.ID().getText();
+		if(ctx.TILDE()!=null) {
+			name = name + "~";
+		}
+		else {
+			for(int i=0; i<ctx.party().size(); i++) {
+				name = name+ctx.party().get(i).ID().getText();
+				if(i!=ctx.party().size()-1) {
+					name = name + ",";
+				}
+			}
 		}
 		name = name+"."+ctx.ID().getText();
 		contractNames.add(name);
@@ -222,7 +230,7 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 			}
 		}
 		funParams.add(new Pair<String, ArrayList<Pair<String, Type>>>(ctx.ID().getText(),tmpFuns));
-		
+
 		addElementsMap(toRet);
 		if(ctx.body()!=null) {
 			if(ctx.body().prec()!=null) {
@@ -313,7 +321,7 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 		}
 		return toRet ;
 	}
-	
+
 	public Map<Pair<String,Integer>,Type> visitHocode(HocodeContext ctx){
 		for(PartyContext d : ctx.party()) {
 			parties.add(0,d.ID().getText());
@@ -345,7 +353,7 @@ public class TypeChecker extends HOStipulaBaseVisitor<Object> {
 				fieldsHO.add(new Pair<String,Boolean>(el.getKey(),false));
 			}
 		}
-		
+
 		if(ctx.fun()!=null) {
 			for(FunContext el : ctx.fun()) {
 				Map<Pair<String,Integer>,Type> tmpMap = new LinkedHashMap<Pair<String,Integer>,Type>();

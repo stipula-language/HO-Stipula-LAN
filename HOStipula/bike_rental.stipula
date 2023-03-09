@@ -12,7 +12,7 @@ agreement (Lender,Borrower,Authority)(rentingTime,cost){
 	_
 } ==> @Payment
 
-@Payment Borrower : pay()[h] (h == cost) {
+@Payment ~ : pay()[h] (h == cost) {
 	h -o wallet 
 	code -> Borrower;
 	now+rentingTime >> 

@@ -158,7 +158,6 @@ public class TypeInference {
 
 
 	public void print_fun(Map<Pair<String,Integer>,Type> tmp1, Map<Pair<String,Integer>,Type> tmp2, int index) {
-
 		String str = "\t"+contractNames.get(index)+"(";
 		for(Pair<String,Integer> pair : tmp1.keySet()) {
 			str = str + tmp1.get(pair).getTypeName()+",";

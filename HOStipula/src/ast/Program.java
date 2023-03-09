@@ -53,11 +53,11 @@ public class Program {
 		}
 		hocodes.add(h);
 	}
-	
+
 	public ArrayList<HOcode> getHOcodes() {
 		return hocodes;
 	}
-	
+
 	public void addContract(Contract c) {
 		if(contracts == null) {
 			contracts = new ArrayList<Contract>();
@@ -511,11 +511,13 @@ public class Program {
 							if(i==0) {
 								System.out.print("\t");
 							}
-							if(i==c.getParty().size()-1) {
-								System.out.print(c.getParty().get(i).getId()+".");
-							}
-							else {
-								System.out.print(c.getParty().get(i).getId()+",");
+							if(c.getParty().get(i).activate()) {
+								if(i==c.getParty().size()-1) {
+									System.out.print(c.getParty().get(i).getId()+".");
+								}
+								else {
+									System.out.print(c.getParty().get(i).getId()+",");
+								}
 							}
 						}
 						System.out.print(c.getId()+"(");
@@ -682,7 +684,7 @@ public class Program {
 								System.out.println("Executing...");
 
 								typedVars = typeinferencer.getTypes();
-								
+
 								if(tmpContr.getSubContracts()!=null) {
 									for(String el : tmpContr.getSubContracts()) {
 										for(Contract el2 : this.getContracts()) {

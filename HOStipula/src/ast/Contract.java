@@ -116,6 +116,11 @@ public class Contract {
 	public ArrayList<Party> getParty(){
 		return disputers;
 	}
+	
+	public void setParties(ArrayList<Party> parties) {
+		disputers = parties;
+	}
+	
 	public ArrayList<Party> getGlobalParties(){
 		return globalParties;
 	}
