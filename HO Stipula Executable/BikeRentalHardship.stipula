@@ -1,0 +1,26 @@
+parties Government
+asset wallet2
+field tax
+
+@Payment Borrower : pay2()[h] (h == cost) {
+	(h*tax) -o Government
+	h -o wallet 
+	code -> Borrower;
+	now+rentingTime >> 
+		@Using {
+		EndReached -> Borrower
+		} ==> @Return 
+} ==> @Using
+
+@Payment Borrower : pay3()[h3] (h3 == cost) {
+	(h3*tax) -o Government
+	h3 -o wallet 
+	code -> Borrower;
+	now+rentingTime >> 
+		@Using {
+		EndReached -> Borrower
+		} ==> @Return 
+} ==> @Using
+
+{ 0.2 -> tax;
+_ } ==> @Payment
