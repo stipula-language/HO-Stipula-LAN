@@ -16,6 +16,8 @@ public class Statement {
 		operator = op;
 	}
 	
+	
+	
 	public Statement(Entity lE, Entity rE, String op, double f) {
 		leftExpr = lE;
 		fract = f;

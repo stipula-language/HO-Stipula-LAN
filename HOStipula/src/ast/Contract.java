@@ -36,7 +36,7 @@ public class Contract {
 		endState = s2;
 		index = i;
 	}
-	
+
 	public Contract(String name, ArrayList<Field> f, ArrayList<Asset> a, ArrayList<Party> d, ArrayList<String> s1, String s2, int i, boolean ho){
 		id = name;
 		vars = f;
@@ -47,11 +47,11 @@ public class Contract {
 		index = i;
 		hofun = ho;
 	}
-	
+
 	public void setHOname(String n) {
 		hocodename = n;
 	}
-	
+
 	public String retHOname() {
 		return hocodename;
 	}
@@ -62,34 +62,34 @@ public class Contract {
 		}
 		prec.add(cond);
 	}
-	
+
 	public void setSubContracts(String cnt) {
 		if(subContracts==null) {
 			subContracts = new ArrayList<String>();
 		}
 		subContracts.add(cnt);
 	}
-	
+
 	public ArrayList<String> getSubContracts(){
 		return subContracts;
 	}
-	
+
 	public void setHObody(boolean flag) {
-		 hobody = flag;
+		hobody = flag;
 	}
-	
+
 	public boolean retHObody() {
 		return hobody;
 	}
-	
+
 	public void setActivate(boolean flag) {
-		 activate = flag;
+		activate = flag;
 	}
-	
+
 	public boolean activate() {
 		return activate;
 	}
-	
+
 	public boolean retFlag() {
 		return hofun;
 	}
@@ -116,11 +116,11 @@ public class Contract {
 	public ArrayList<Party> getParty(){
 		return disputers;
 	}
-	
+
 	public void setParties(ArrayList<Party> parties) {
 		disputers = parties;
 	}
-	
+
 	public ArrayList<Party> getGlobalParties(){
 		return globalParties;
 	}
@@ -159,7 +159,7 @@ public class Contract {
 	public String getEndState() {
 		return endState;
 	}
-	
+
 	public void setEndState(String state) {
 		endState = state;
 	}
@@ -243,7 +243,7 @@ public class Contract {
 					indexLeft = findVar( left.getId(), vars) ;
 
 					if(indexLeft!=-1) {
-						if(!(vars.get(indexLeft).getType() instanceof TimeType) || vars.get(indexLeft).getValueStr()==null) {
+						if((vars.get(indexLeft).getType() instanceof TimeType) || vars.get(indexLeft).getValueStr()==null) {
 							left.setValue((float) vars.get(indexLeft).getValue());
 						}
 						else {
@@ -254,7 +254,7 @@ public class Contract {
 						indexLeft = findVar( left.getId(), globalVars) ;
 
 						if(indexLeft!=-1) {
-							if(!(globalVars.get(indexLeft).getType() instanceof TimeType) || globalVars.get(indexLeft).getValueStr()==null) {
+							if((globalVars.get(indexLeft).getType() instanceof TimeType) || globalVars.get(indexLeft).getValueStr()==null) {
 								left.setValue((float) globalVars.get(indexLeft).getValue());
 							}
 							else {
@@ -268,7 +268,7 @@ public class Contract {
 							}
 							catch(NumberFormatException e)
 							{
-
+								left.setValueStr(left.getId());
 							}
 						}
 					}
@@ -294,7 +294,7 @@ public class Contract {
 					indexRight = findVar( right.getId(), vars) ;
 
 					if(indexRight!=-1) {
-						if(!(vars.get(indexRight).getType() instanceof TimeType) || vars.get(indexRight).getValueStr()==null) {
+						if((vars.get(indexRight).getType() instanceof TimeType) || vars.get(indexRight).getValueStr()==null) {
 							right.setValue((float) vars.get(indexRight).getValue());
 						}
 						else {
@@ -306,7 +306,7 @@ public class Contract {
 						indexRight = findVar( right.getId(), globalVars) ;
 
 						if(indexRight!=-1) {
-							if(!(globalVars.get(indexRight).getType() instanceof TimeType) || globalVars.get(indexRight).getValueStr()==null) {
+							if((globalVars.get(indexRight).getType() instanceof TimeType) || globalVars.get(indexRight).getValueStr()==null) {
 								right.setValue((float) globalVars.get(indexRight).getValue());
 							}
 							else {
@@ -321,6 +321,7 @@ public class Contract {
 							}
 							catch(NumberFormatException e)
 							{
+								right.setValueStr(right.getId());
 
 							}
 						}
@@ -376,15 +377,22 @@ public class Contract {
 				if(rightExpr.getId().equals("_")) {
 					everyParty = true;
 				}
-				else if(isComplexExpr(leftExpr)) {
+				else if(leftExpr!=null && isComplexExpr(leftExpr)) {
 					ArrayList<Field> entities = divideComplexExpr(leftExpr);
 					if(entities.size()==2) {
 						leftExpr = entities.get(0);
 						leftExpr2 = entities.get(1);
 					}
 				}
+				String leftExprName = "";
 
-				int indexLeft = findVar(leftExpr.getId(),vars);
+				if(leftExpr==null) {
+					leftExprName = "";
+				}
+				else {
+					leftExprName = leftExpr.getId();
+				}
+				int indexLeft = findVar(leftExprName,vars);
 				int indexLeft2 = -1;
 				if(leftExpr2!=null) {
 					indexLeft2 = findVar(leftExpr2.getId(),vars);
@@ -401,9 +409,9 @@ public class Contract {
 				boolean extRight = false;
 
 				if(indexLeft==-1) {
-					indexLeft = findVar(leftExpr.getId(),globalVars);
+					indexLeft = findVar(leftExprName,globalVars);
 					if(indexLeft == -1) {
-						indexLeft = findParty(leftExpr.getId());
+						indexLeft = findParty(leftExprName);
 						if(indexLeft==-1) {
 							extLeft = true;
 						}
@@ -456,21 +464,21 @@ public class Contract {
 					if(extLeft && globalRight) {
 						try 
 						{ 
-							globalVars.get(indexRight).setValue((float)Double.parseDouble(leftExpr.getId()));
+							globalVars.get(indexRight).setValue((float)Double.parseDouble(leftExprName));
 						}
 						catch(NumberFormatException e)
 						{
-							globalVars.get(indexRight).setValueStr(String.format(leftExpr.getId()));
+							globalVars.get(indexRight).setValueStr(String.format(leftExprName));
 						}
 					}
 					else if(extLeft && partyRight) {
 						try 
 						{ 
-							globalParties.get(indexRight).setValue(((float)Double.parseDouble(leftExpr.getId())));
+							globalParties.get(indexRight).setValue(((float)Double.parseDouble(leftExprName)));
 						}
 						catch(NumberFormatException e)
 						{
-							globalParties.get(indexRight).setValueStr(String.format(leftExpr.getId()));
+							globalParties.get(indexRight).setValueStr(String.format(leftExprName));
 						}
 					}
 					else if(extLeft && !globalRight) {
@@ -478,24 +486,24 @@ public class Contract {
 						try 
 						{ 
 
-							vars.get(indexRight).setValue((float)Double.parseDouble(leftExpr.getId()));
+							vars.get(indexRight).setValue((float)Double.parseDouble(leftExprName));
 						}
 						catch(NumberFormatException e)
 						{
-							vars.get(indexRight).setValueStr(String.format(leftExpr.getId()));
+							vars.get(indexRight).setValueStr(String.format(leftExprName));
 						}
 					}
 					else if(extLeft && everyParty) {
 						try 
 						{ 
 							for(Party p : globalParties) {
-								p.setValue(((float)Double.parseDouble(leftExpr.getId())));
+								p.setValue(((float)Double.parseDouble(leftExprName)));
 							}
 						}
 						catch(NumberFormatException e)
 						{
 							for(Party p : globalParties) {
-								p.setValueStr(String.format(leftExpr.getId()));
+								p.setValueStr(String.format(leftExprName));
 							}
 						}
 					}
@@ -506,8 +514,14 @@ public class Contract {
 							globalParties.get(indexRight).setValue(((float) (globalParties.get(indexRight).getValue()+(float) globalVars.get(indexLeft).getValue())));
 						}
 						else {
-							globalParties.get(indexRight).setValueStr(globalParties.get(indexRight).getValueStr()+globalVars.get(indexLeft).getValueStr());
+							if(globalParties.get(indexRight).getValueStr()==null) {
+								globalParties.get(indexRight).setValueStr(globalVars.get(indexLeft).getValueStr());
+							}
+							else {
+								globalParties.get(indexRight).setValueStr(globalParties.get(indexRight).getValueStr()+globalVars.get(indexLeft).getValueStr());
+							}						
 						}
+
 						globalVars.get(indexRight).setType(t1);
 
 					}
@@ -518,7 +532,12 @@ public class Contract {
 								p.setValue(((float) (p.getValue()+(float) globalVars.get(indexLeft).getValue())));
 							}
 							else {
-								p.setValueStr(p.getValueStr()+globalVars.get(indexLeft).getValueStr());
+								if(p.getValueStr()==null) {
+									p.setValueStr(globalVars.get(indexLeft).getValueStr());
+								}
+								else {
+									p.setValueStr(p.getValueStr()+globalVars.get(indexLeft).getValueStr());
+								}
 							}
 							globalVars.get(indexRight).setType(t1);
 						}
@@ -530,7 +549,12 @@ public class Contract {
 							globalParties.get(indexRight).setValue(((float) (globalParties.get(indexRight).getValue()+(float) vars.get(indexLeft).getValue())));
 						}
 						else {
-							globalParties.get(indexRight).setValueStr(globalParties.get(indexRight).getValueStr()+vars.get(indexLeft).getValueStr());
+							if(globalParties.get(indexRight).getValueStr()==null) {
+								globalParties.get(indexRight).setValueStr(vars.get(indexLeft).getValueStr());
+							}
+							else {
+								globalParties.get(indexRight).setValueStr(globalParties.get(indexRight).getValueStr()+vars.get(indexLeft).getValueStr());
+							}
 						}
 						vars.get(indexLeft).setType(t1);
 					}
@@ -542,8 +566,12 @@ public class Contract {
 								p.setValue(((float) (p.getValue()+(float) vars.get(indexLeft).getValue())));
 							}
 							else {
-								p.setValueStr(p.getValueStr()+vars.get(indexLeft).getValueStr());
-							}
+								if(p.getValueStr()==null) {
+									p.setValueStr(vars.get(indexLeft).getValueStr());
+								}
+								else {
+									p.setValueStr(p.getValueStr()+vars.get(indexLeft).getValueStr());
+								}							}
 							vars.get(indexLeft).setType(t1);
 						}
 					}
@@ -554,11 +582,16 @@ public class Contract {
 						if(valid) {
 							Type t1 = tc.getCorrectType(vars.get(indexRight),index);
 							Type t2 = tc.getCorrectType(vars.get(indexLeft),index);
-							if(!(t1 instanceof StringType)) {
+							if(!(t2 instanceof StringType)) {
 								vars.get(indexRight).setValue((float) (vars.get(indexRight).getValue()+(float) vars.get(indexLeft).getValue()));
 							}
 							else {
-								vars.get(indexRight).setValueStr(vars.get(indexRight).getValueStr()+vars.get(indexLeft).getValueStr());
+								if(vars.get(indexRight).getValueStr()==null) {
+									vars.get(indexRight).setValueStr(vars.get(indexLeft).getValueStr());
+								}
+								else {
+									vars.get(indexRight).setValueStr(vars.get(indexRight).getValueStr()+vars.get(indexLeft).getValueStr());
+								}					
 							}
 							vars.get(indexRight).setType(t1);
 							vars.get(indexLeft).setType(t2);
@@ -571,12 +604,17 @@ public class Contract {
 						if(valid) {
 							Type t1 = tc.getCorrectType(vars.get(indexRight),index);
 							Type t2 = tc.getCorrectType(globalVars.get(indexLeft),index);
-							if(!(t1 instanceof StringType)) {
+							if(!(t2 instanceof StringType)) {
 								vars.get(indexRight).setValue((float) (vars.get(indexRight).getValue()+(float) globalVars.get(indexLeft).getValue()));
 							}
 							else {
-								vars.get(indexRight).setValueStr(vars.get(indexRight).getValueStr()+globalVars.get(indexLeft).getValueStr());
-							}
+								if(vars.get(indexRight).getValueStr()==null) {
+									vars.get(indexRight).setValueStr(globalVars.get(indexLeft).getValueStr());
+								}
+								else {
+									vars.get(indexRight).setValueStr(vars.get(indexRight).getValueStr()+globalVars.get(indexLeft).getValueStr());
+								}
+								}
 							vars.get(indexRight).setType(t1);
 							globalVars.get(indexLeft).setType(t2);
 						}
@@ -587,11 +625,17 @@ public class Contract {
 						if(valid) {
 							Type t1 = tc.getCorrectType(globalVars.get(indexRight),index);
 							Type t2 = tc.getCorrectType(vars.get(indexLeft),index);
-							if(!(t1 instanceof StringType)) {
+							if(!(t2 instanceof StringType)) {
 								globalVars.get(indexRight).setValue((float) (globalVars.get(indexRight).getValue()+(float) vars.get(indexLeft).getValue()));	
 							}
 							else {
-								globalVars.get(indexRight).setValueStr(globalVars.get(indexRight).getValueStr()+vars.get(indexLeft).getValueStr());
+								if(globalVars.get(indexRight).getValueStr()==null) {
+									globalVars.get(indexRight).setValueStr(vars.get(indexLeft).getValueStr());
+
+								}
+								else {
+									globalVars.get(indexRight).setValueStr(globalVars.get(indexRight).getValueStr()+vars.get(indexLeft).getValueStr());
+								}
 							}
 							globalVars.get(indexRight).setType(t2);
 							vars.get(indexLeft).setType(t2);
@@ -604,11 +648,17 @@ public class Contract {
 						if(valid) {
 							Type t1 = tc.getCorrectType(globalVars.get(indexRight),index);
 							Type t2 = tc.getCorrectType(globalVars.get(indexLeft),index);
-							if(!(t1 instanceof StringType)) {
+							if(!(t2 instanceof StringType)) {
 								globalVars.get(indexRight).setValue((float) (globalVars.get(indexRight).getValue()+(float) globalVars.get(indexLeft).getValue()));
 							}
 							else {
-								globalVars.get(indexRight).setValueStr(globalVars.get(indexRight).getValueStr()+globalVars.get(indexLeft).getValueStr());
+								if(globalVars.get(indexRight).getValueStr()==null) {
+									globalVars.get(indexRight).setValueStr(globalVars.get(indexLeft).getValueStr());
+
+								}
+								else {
+									globalVars.get(indexRight).setValueStr(globalVars.get(indexRight).getValueStr()+globalVars.get(indexLeft).getValueStr());
+								}
 							}
 							globalVars.get(indexRight).setType(t1);
 							globalVars.get(indexLeft).setType(t2);
@@ -624,11 +674,11 @@ public class Contract {
 						if(extLeft) {
 							try 
 							{ 
-								result.setValue((float)Double.parseDouble(leftExpr.getId())+(float)Double.parseDouble(leftExpr2.getId()));
+								result.setValue((float)Double.parseDouble(leftExprName)+(float)Double.parseDouble(leftExpr2.getId()));
 							}
 							catch(NumberFormatException e)
 							{
-								result.setValueStr(String.format(leftExpr.getId())+String.format(leftExpr2.getId()));
+								result.setValueStr(String.format(leftExprName)+String.format(leftExpr2.getId()));
 							}
 						}
 						else if(globalLeft) {
@@ -656,11 +706,11 @@ public class Contract {
 						if(extLeft) {
 							try 
 							{ 
-								result.setValue((float)Double.parseDouble(leftExpr.getId())+globalVars.get(indexLeft2).getValue());
+								result.setValue((float)Double.parseDouble(leftExprName)+globalVars.get(indexLeft2).getValue());
 							}
 							catch(NumberFormatException e)
 							{
-								result.setValueStr(String.format(leftExpr.getId())+globalVars.get(indexLeft2).getValueStr());
+								result.setValueStr(String.format(leftExprName)+globalVars.get(indexLeft2).getValueStr());
 							}
 						}
 						else if(globalLeft) {
@@ -700,11 +750,11 @@ public class Contract {
 						if(extLeft) {
 							try 
 							{ 
-								result.setValue((float)Double.parseDouble(leftExpr.getId())+vars.get(indexLeft2).getValue());
+								result.setValue((float)Double.parseDouble(leftExprName)+vars.get(indexLeft2).getValue());
 							}
 							catch(NumberFormatException e)
 							{
-								result.setValueStr(String.format(leftExpr.getId())+vars.get(indexLeft2).getValueStr());
+								result.setValueStr(String.format(leftExprName)+vars.get(indexLeft2).getValueStr());
 							}
 						}
 						else if(globalLeft) {
@@ -811,7 +861,7 @@ public class Contract {
 			}
 
 			else if(s.getOperator().equals("ASSETUP")) {
-
+				valid = true;
 				Asset leftExpr = (Asset) s.getLeftExpr();
 				Asset rightExpr = (Asset) s.getRightExpr();
 
@@ -929,8 +979,6 @@ public class Contract {
 					}
 				}
 				else if(!globalLeft && globalRight) {
-					System.out.println(globalAssets.get(indexRight).getId() + " = " + globalAssets.get(indexRight).getValue() );
-					System.out.println(assets.get(indexLeft).getId() + " = " + assets.get(indexLeft).getValue() );
 
 					if(s.getFract()!=0) {
 						assets.get(indexLeft).move(((float)s.getFract())*assets.get(indexLeft).getValue(),globalAssets.get(indexRight));
@@ -1017,12 +1065,21 @@ public class Contract {
 
 
 		}
+		if(!valid) {
+			System.out.print("Preconditions do not hold (");
+			for(Expression c : prec) {
+				c.printExpression();
+			}
+			System.out.println(").");
+			return valid;
+		}
 		if(statements!=null && valid) {
 			valid = runStatements(valid,tc,statements);
 		}
 		if(ifThenElse!=null && valid) {
 			boolean flag = false;
 			for(Pair<Expression,ArrayList<Statement>> pair : ifThenElse) {
+				
 				if(pair.getKey()!=null ){
 					if(pair.getKey().getLeftComplexExpr()!=null && pair.getKey().getRightComplexExpr()!=null) {
 						boolean validLeft = true;
@@ -1035,18 +1092,17 @@ public class Contract {
 						setValuesConditions(leftBigL,leftBigR);
 						setValuesConditions(rightBigL,rightBigR);
 
-						if(!pair.getKey().isValid(leftBigL,leftBigR,pair.getKey().getLeftComplexExpr().getOp())) {
-							validLeft = false;
-						}
-						if(!pair.getKey().isValid(rightBigL,rightBigR,pair.getKey().getRightComplexExpr().getOp())) {
-							validRight = false;
-						}
+						validLeft = pair.getKey().isValid(leftBigL,leftBigR,pair.getKey().getLeftComplexExpr().getOp());
+						validRight = pair.getKey().isValid(rightBigL,rightBigR,pair.getKey().getRightComplexExpr().getOp());
+
 						if(pair.getKey().getOp().equals("&&")) {
 							valid = validLeft && validRight;
 						}
 						else if(pair.getKey().getOp().equals("||")) {
 							valid = validLeft || validRight;
 						}
+
+
 					}
 					else if(pair.getKey().getLeftComplexExpr()!=null) {
 						setValuesConditions(pair.getKey().getLeftComplexExpr().getLeft(),pair.getKey().getLeftComplexExpr().getRight());
@@ -1057,19 +1113,28 @@ public class Contract {
 						if( !pair.getKey().getLeft().getId().equals("_")) {
 							setValuesConditions(pair.getKey().getLeft(),pair.getKey().getRight());
 						}
+
 					}
 					if(pair.getKey().getLeftComplexExpr()!=null && pair.getKey().getRightComplexExpr()!=null && valid) {
 						if(!flag) {
 							valid = runStatements(valid,tc,pair.getValue());
 							flag = true;
+
+							break;
+
 						}
+
 					}
 					else if((pair.getKey().getLeftComplexExpr()==null && pair.getKey().getLeft().getId().equals("_"))  || pair.getKey().isValidExpr(pair.getKey()) ) {
-						if(!flag) {
 
+						if(!flag) {
 							valid = runStatements(valid,tc,pair.getValue());
 							flag = true;
+							break;
 						}
+
+
+
 					}
 				}
 
@@ -1084,13 +1149,7 @@ public class Contract {
 				}
 			}
 		}
-		if(!valid) {
-			System.out.print("Preconditions do not hold (");
-			for(Expression c : prec) {
-				c.printExpression();
-			}
-			System.out.println(").");
-		}
+
 		return valid;
 	}
 

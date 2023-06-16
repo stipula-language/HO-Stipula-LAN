@@ -89,9 +89,11 @@ public class TypeInference {
 			Map<Pair<String,Integer>,Type> tmpAssets = new LinkedHashMap<Pair<String,Integer>,Type>();
 			for(Pair<String,Integer> el : assets.keySet()) {
 				boolean flag = false;
-				for(Pair<String,Boolean> el2 : assetsHO) {
-					if(el2.getKey().equals(el.getKey()) && !el2.getValue()) {
-						flag = true;
+				if(assetsHO!=null) {
+					for(Pair<String,Boolean> el2 : assetsHO) {
+						if(el2.getKey().equals(el.getKey()) && !el2.getValue()) {
+							flag = true;
+						}
 					}
 				}
 				if(!flag) {
@@ -105,9 +107,11 @@ public class TypeInference {
 			Map<Pair<String,Integer>,Type> tmpFields = new LinkedHashMap<Pair<String,Integer>,Type>();
 			for(Pair<String,Integer> el : fields.keySet()) {
 				boolean flag = false;
-				for(Pair<String,Boolean> el2 : fieldsHO) {
-					if(el2.getKey().equals(el.getKey()) && !el2.getValue()) {
-						flag = true;
+				if(fieldsHO!=null) {
+					for(Pair<String,Boolean> el2 : fieldsHO) {
+						if(el2.getKey().equals(el.getKey()) && !el2.getValue()) {
+							flag = true;
+						}
 					}
 				}
 				if(!flag) {
@@ -132,9 +136,11 @@ public class TypeInference {
 
 		for(int i=0; i<contractNames.size(); i++) {
 			boolean toPrint = true;
-			for(Pair<String,Boolean> el2 : functionsHO) {
-				if(el2.getKey().equals(contractNames.get(i)) && !el2.getValue()) {
-					toPrint = false;
+			if(functionsHO!=null) {
+				for(Pair<String,Boolean> el2 : functionsHO) {
+					if(el2.getKey().equals(contractNames.get(i)) && !el2.getValue()) {
+						toPrint = false;
+					}
 				}
 			}
 			if(toPrint) {

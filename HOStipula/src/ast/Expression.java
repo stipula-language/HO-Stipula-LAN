@@ -48,11 +48,17 @@ public class Expression {
 
 
 	public boolean isValid(Entity left, Entity right, String op) {
-
+		
 		if(op.equals("==")) {
+			if(left.getValueStr()!="") {
+				return left.getValueStr().equals(right.getValueStr());
+			}
 			return left.getValue()==right.getValue();
 		}
 		else if(op.equals("!=")) {
+			if(left.getValueStr()!="") {
+				return !left.getValueStr().equals(right.getValueStr());
+			}
 			return left.getValue()!=right.getValue();
 		}
 		else if(op.equals(">")) {
