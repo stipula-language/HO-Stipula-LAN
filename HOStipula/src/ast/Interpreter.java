@@ -523,13 +523,13 @@ public class Interpreter extends HOStipulaBaseVisitor {
 					}
 				}
 				else {
-					left = new Asset(expr.getRightComplexExpr().getRLeftId());
+					left = new Asset(expr.getRLeftId());
 					right = new Asset(ctx.right.getText());
 					try{
-						fract = Double.parseDouble(expr.getLeftComplexExpr().getLLeftId());
+						fract = Double.parseDouble(expr.getLLeftId());
 					}
 					catch(NumberFormatException e){
-						fractExpr = new Entity((expr.getLeftComplexExpr().getLLeftId()));
+						fractExpr = new Entity((expr.getLLeftId()));
 					}
 				}
 				ArrayList<Statement> tmpArray = new ArrayList<Statement>();

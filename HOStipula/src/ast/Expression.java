@@ -44,6 +44,7 @@ public class Expression {
 	}
 	
 	public String getRLeftId() {
+
 		if(rightComplexExpr.getLeft()==null) {
 			return rightComplexExpr.getTextExpression();
 		}

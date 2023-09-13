@@ -3,7 +3,7 @@ asset wallet2
 field tax
 
 @Payment Borrower : pay2()[h] (h == cost) {
-	(h*tax) -o Government
+	(tax*h) -o Government
 	h -o wallet 
 	code -> Borrower;
 	now+rentingTime >> 
@@ -13,7 +13,7 @@ field tax
 } ==> @Using
 
 @Payment Borrower : pay3()[h3] (h3 == cost) {
-	(h3*tax) -o Government
+	(tax*h3) -o Government
 	h3 -o wallet 
 	code -> Borrower;
 	now+rentingTime >> 
