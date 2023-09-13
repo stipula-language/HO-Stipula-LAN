@@ -29,6 +29,34 @@ public class Expression {
 		op = ops;
 	}
 	
+	public String getLLeftId() {
+		if(leftComplexExpr.getLeft()==null) {
+			return leftComplexExpr.getTextExpression();
+		}
+		return leftComplexExpr.getLeft().getId();
+	}
+	
+	public String getLRightId() {
+		if(leftComplexExpr.getLeft()==null) {
+			return leftComplexExpr.getTextExpression();
+		}
+		return leftComplexExpr.getRight().getId();
+	}
+	
+	public String getRLeftId() {
+		if(rightComplexExpr.getLeft()==null) {
+			return rightComplexExpr.getTextExpression();
+		}
+		return rightComplexExpr.getLeft().getId();
+	}
+	
+	public String getRRightId() {
+		if(rightComplexExpr.getLeft()==null) {
+			return rightComplexExpr.getTextExpression();
+		}
+		return rightComplexExpr.getRight().getId();
+	}
+	
 	public Expression(Entity lE) {
 		leftExpr = lE;
 		op = null;

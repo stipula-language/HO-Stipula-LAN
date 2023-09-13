@@ -473,13 +473,13 @@ public class Interpreter extends HOStipulaBaseVisitor {
 						}
 					}
 					else {
-						left = new Asset(expr.getRightComplexExpr().getLeft().getId());
+						left = new Asset(expr.getRLeftId());
 						right = new Asset(ctx.rightPlus.getText());
 						try{
-							fract = Double.parseDouble(expr.getLeftComplexExpr().getLeft().getId());
+							fract = Double.parseDouble(expr.getLLeftId());
 						}
 						catch(NumberFormatException e){
-							fractExpr = new Entity((expr.getLeftComplexExpr().getLeft().getId()));
+							fractExpr = new Entity((expr.getLLeftId()));
 						}
 					}
 
@@ -508,7 +508,7 @@ public class Interpreter extends HOStipulaBaseVisitor {
 			else if(ctx.left.expr()!=null) {
 
 				Expression expr = visitExpr(ctx.left.expr());
-
+				expr.printExpression();
 				double fract = 0;
 				Entity fractExpr = null;
 
@@ -523,13 +523,13 @@ public class Interpreter extends HOStipulaBaseVisitor {
 					}
 				}
 				else {
-					left = new Asset(expr.getRightComplexExpr().getLeft().getId());
+					left = new Asset(expr.getRightComplexExpr().getRLeftId());
 					right = new Asset(ctx.right.getText());
 					try{
-						fract = Double.parseDouble(expr.getLeftComplexExpr().getLeft().getId());
+						fract = Double.parseDouble(expr.getLeftComplexExpr().getLLeftId());
 					}
 					catch(NumberFormatException e){
-						fractExpr = new Entity((expr.getLeftComplexExpr().getLeft().getId()));
+						fractExpr = new Entity((expr.getLeftComplexExpr().getLLeftId()));
 					}
 				}
 				ArrayList<Statement> tmpArray = new ArrayList<Statement>();
@@ -721,7 +721,7 @@ public class Interpreter extends HOStipulaBaseVisitor {
 			return new Expression(visitValue(ctx.left).getLeft(),ctx.operator.getText());
 		}
 		else {
-			return new Expression(visitValue(ctx.left).getLeft());
+			return new Expression(visitValue(ctx.left),null,null);
 		}
 
 	}

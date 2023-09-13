@@ -52,6 +52,9 @@ public class Event  {
 		}
 		else if(expr.getLeftComplexExpr()!=null){
 			Entity left = expr.getLeftComplexExpr().getLeft();
+			if(left==null) {
+				left = new Entity(expr.getLeftComplexExpr().getTextExpression());
+			}
 			Entity right = null;
 			
 			if(expr.getRightComplexExpr()!=null) {
@@ -65,13 +68,19 @@ public class Event  {
 			String op = expr.getOp();
 			int indexVarLeft;
 			int indexVarRight;
-			if(left.getId().equals("now")) {
+			if(left!=null && left.getId().equals("now")) {
 				left.setValue(0);
 				indexVarRight = contract.findVar(right.getId(), program.getFields()) ;
-				right.setValue(program.getFields().get(indexVarRight).getValue());
+				if(indexVarRight == -1) {
+					if(right.getId().matches("-?\\d+(\\.\\d+)?")) {
+						right.setValue(Float.parseFloat(right.getId()));
+					}
+				}
+				else {
+					right.setValue(program.getFields().get(indexVarRight).getValue());
+					program.getFields().get(indexVarRight).setType(new TimeType());
 
-				program.getFields().get(indexVarRight).setType(new TimeType());
-				
+				}
 
 				contract.setValuesConditions(null,right);
 			}
