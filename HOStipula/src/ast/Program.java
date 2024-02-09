@@ -382,7 +382,7 @@ public class Program {
 
 				}
 				else {
-					System.out.println("Time has passed, but wrong init state. Event couldn't run!");
+					System.out.println("Time has passed, but wrong init state. Event couldn't run! " );
 					System.out.println("############");
 				}
 				running = false;

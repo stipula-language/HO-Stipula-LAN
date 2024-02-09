@@ -36,10 +36,19 @@ public class Event  {
 	public long evaluateEvent(Program program) {
 		long seconds = 0;
 		DateUtils d = new DateUtils();
-
 		if(expr.getOp()==null){
 			Entity left = expr.getLeft();
 			int indexVar = contract.findVar(left.getId(), program.getFields()) ;
+			
+			if(program.getFields().get(indexVar).getValueStr()==null) {
+				left.setValue(program.getFields().get(indexVar).getValue());
+
+			}
+			else {
+				left.setValueStr(program.getFields().get(indexVar).getValueStr());
+
+			}
+			
 			program.getFields().get(indexVar).setType(new TimeType());
 			contract.setValuesConditions(left,null);
 			if(!left.getValueStr().equals("")) {
